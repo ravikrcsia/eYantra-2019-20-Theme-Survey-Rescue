@@ -1,4 +1,12 @@
 #!/usr/bin/env python
+#* Team Id : SR#7147
+#* Author List : Ravikumar Chaurasia
+#* Filename: schedular.py
+#* Theme: Survay And Rescue
+#* Functioning : This script acting as a node to commend the position_hold.py(to control the drone) for easy transversal of the arena.
+#				 Here we used "cell_coords.json" and "LED_OrgConfig.tsv" to calculated the nearest the coordinate and set the priority as per the distance and type of service.
+#				 It subscribe to various topics like "/serviced_info" to get to know the status of the current task and act wisly by publishing it on "/decision_info".
+
 #from __future__ import print_function
 import roslib
 import sys
@@ -261,7 +269,10 @@ class sr_scheduler():
 	def shutdown_hook(self):
 		# This function will run when the ros shutdown request is recieved.
 		# For instance, when you press Ctrl+C when this is running
-		pass
+		self.decided_msg.location = self.base
+		self.decided_msg.info = 'BASE'
+		self.decision_pub.publish(self.decided_msg)
+		#This will hover the drone over the BASE, we can even send msg to land by disarming it.
 
 		#For this we can first hover above the base and then disarm (OR) we can pass a co-ordinate of base with decrease in z-axis and then disarm
 
